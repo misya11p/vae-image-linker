@@ -24,3 +24,8 @@ function previewImage(obj)
 	});
 	fileReader.readAsDataURL(obj.files[0]);
 }
+
+const API_URL = "https://muds.gdl.jp/s2122027/";
+fetch(API_URL)
+  .then((data) => data.text())
+  .then((res) => console.log(res));
