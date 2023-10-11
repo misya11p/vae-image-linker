@@ -4,9 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>テスト</title>
-  <script src="./index.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h1>テスト</h1>
+<body class="text-center">
+  <h1>タイトル</h1>
+  <div id="input" class="flex justify-center border-2 my-6">
+    <div id="paint-block" class="mx-6">
+      <div id="navigation" class="h-8">
+        <input type="radio" id="draw" name="mode">
+        <label for="draw">ペン</label>
+        <input type="radio" id="erase" name="mode">
+        <label for="draw">消しゴム</label>
+      </div>
+      <canvas id="canvas" class="border-2" width="320" height="320"></canvas>
+    </div>
+    <div id="load-block" class="mx-6">
+      <input type="file" id="file" accept="image/*" class="h-8" onchange="previewImage(this);">
+      <img id="preview" class="border-2 w-80 h-80" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+    </div>
+    <button id="submit" class="h-8">生成</button>
+  </div>
+  <div id="result">
+    result
+  </div>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+<script src="./index.js"></script>
 </html>
