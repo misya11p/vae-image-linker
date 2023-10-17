@@ -11,18 +11,19 @@ prog = train_progress()
 
 
 def main(
-    device: str = "auto",
-    data_root: str = "./data",
     image_size: int = 128,
-    save_path: str = "model.pth",
     n_epochs: int = 30,
-    lr: float = 1e-4,
     batch_size: int = 64,
+    lr: float = 1e-4,
+    mag: int = 10,
+    data_root: str = "data",
+    save_path: str = "models/model.pth",
+    device: str = "auto",
 ):
     if device == "auto":
         device = "cuda" if torch.cuda.is_available() else "cpu"
     device = torch.device(device)
-    dataloader = get_dataloader(data_root, image_size, batch_size)
+    dataloader = get_dataloader(data_root, image_size, batch_size, mag)
     model = VAE(image_size, device)
     optimizer = optim.Adam(model.parameters(), lr=lr)
     print("start training")
@@ -58,12 +59,13 @@ def train(
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("--device", type=str, default="auto")
-    parser.add_argument("--data_root", type=str, default="./data")
     parser.add_argument("--image_size", type=int, default=128)
-    parser.add_argument("--save_path", type=str, default="model.pth")
     parser.add_argument("--n_epochs", type=int, default=30)
-    parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--batch_size", type=int, default=64)
+    parser.add_argument("--lr", type=float, default=1e-4)
+    parser.add_argument("--mag", type=int, default=10)
+    parser.add_argument("--data_root", type=str, default="data")
+    parser.add_argument("--save_path", type=str, default="models/model.pth")
+    parser.add_argument("--device", type=str, default="auto")
     args = parser.parse_args()
     main(**vars(args))
