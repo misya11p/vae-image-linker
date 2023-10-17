@@ -3,18 +3,19 @@ from torch import nn
 
 
 class VAE(nn.Module):
-    def __init__(self, data_size: int, device: str):
+    def __init__(self, image_size: int, device: str):
         super().__init__()
+        self.image_size = image_size
         self.encoder = nn.Sequential(
             nn.Flatten(),
-            self._linear_block(data_size, 512),
+            self._linear_block(image_size**2, 512),
             self._linear_block(512, 128),
             nn.Linear(128, 64*2),
         )
-        self.encoder = nn.Sequential(
+        self.decoder = nn.Sequential(
             self._linear_block(64, 128),
             self._linear_block(128, 512),
-            nn.Linear(512, data_size),
+            nn.Linear(512, image_size**2),
             nn.Sigmoid()
         )
         self.device = device
@@ -31,7 +32,7 @@ class VAE(nn.Module):
 
     def forward(self, x):
         z, mean, log_var = self.encode(x)
-        y = self.decoder(z).view(-1, 1, 28, 28)
+        y = self.decoder(z).view(-1, 1, self.image_size, self.image_size)
         return y, mean, log_var, z
 
     def representation(self, mean, log_var):
@@ -47,3 +48,6 @@ class VAE(nn.Module):
     def decode(self, z):
         y = self.decoder(z)
         return y
+
+    def save(self, path: str) -> None:
+        torch.save(self.state_dict(), path)
