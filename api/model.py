@@ -49,5 +49,8 @@ class VAE(nn.Module):
         y = self.decoder(z)
         return y
 
-    def save(self, path: str) -> None:
+    def save(self, path: str):
         torch.save(self.state_dict(), path)
+
+    def load(self, path: str, device: str):
+        self.load_state_dict(torch.load(path, map_location=device))
