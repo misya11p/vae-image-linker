@@ -25,24 +25,30 @@ function previewImage(obj)
 	fileReader.readAsDataURL(obj.files[0]);
 }
 
-const API_URL = "https://muds.gdl.jp/s2122027/";
-fetch(API_URL)
-  .then((data) => data.text())
-  .then((res) => console.log(res));
+// const API_URL = "https://muds.gdl.jp/s2122027/";
+const API_URL = "http://127.0.0.1:5000/image-linker";
+// const API_URL = "http://127.0.0.1:8000/";
+// fetch(API_URL)
+//   .then((data) => data.text())
+//   .then((res) => console.log(res));
 
 
 function getResult() {
+  console.log("getResult");
   var image1 = document.getElementById("canvas");
-  var blob1 = Base64toBlob(image2.toDataURL());
   var image2 = document.getElementById("loadedImage");
-  var blob2 = Base64toBlob(image1.src);
-  var formData = new FormData();
-  formData.append("image1", blob1);
-  formData.append("image2", blob2);
+  let data = {
+    image1: image1.toDataURL("image/png"),
+    image2: image2.src,
+  };
+  let jsonData = JSON.stringify(data);
 
   fetch(API_URL, {
     method: "POST",
-    body: formData,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: jsonData,
   })
     .then((data) => data.text())
     .then((res) => {

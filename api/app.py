@@ -1,7 +1,9 @@
 from flask import Flask, request
-from .link_imaes import link_images
+from flask_cors import CORS
+from link_imaes import link_images
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/")
@@ -17,7 +19,19 @@ CONFIG = {
 
 @app.route("/image-linker", methods=["POST"])
 def image_linker():
-    image1 = request.files["image1"]
-    image2 = request.files["image2"]
+    try:
+        data = request.get_json()
+    except Exception as e:
+        print(e)
+        return {"result": "error"}
+
+    # Images of base64
+    image1 = data["image1"]
+    image2 = data["image2"]
+
     result = link_images(image1, image2, CONFIG)
-    return result
+    return {"result": "success"}
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
