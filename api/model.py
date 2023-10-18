@@ -7,25 +7,39 @@ class VAE(nn.Module):
         super().__init__()
         self.image_size = image_size
         self.encoder = nn.Sequential(
+            self._conv_block(3, 32, 7, 2, 3), # 128 -> 32
+            self._conv_block(32, 64, 5, 2, 2), # 32 -> 8
+            self._conv_block(64, 128, 3, 2, 1), # 8 -> 2
             nn.Flatten(),
-            self._linear_block(image_size**2, 512),
-            self._linear_block(512, 128),
+            nn.Linear(128*2*2, 128),
+            nn.ReLU(),
             nn.Linear(128, 64*2),
         )
         self.decoder = nn.Sequential(
-            self._linear_block(64, 128),
-            self._linear_block(128, 512),
-            nn.Linear(512, image_size**2),
+            self._conv_t_block(64, 32, 4, 1, 0), # 1 -> 4
+            self._conv_t_block(32, 16, 6, 4, 1), # 4 -> 16
+            self._conv_t_block(16, 8, 6, 4, 1), # 16 -> 64 
+            nn.ConvTranspose2d(8, 3, 4, 2, 1), # 64 -> 128
             nn.Sigmoid()
         )
         self.device = device
         self.to(device)
 
     @staticmethod
-    def _linear_block(input_size, output_size):
+    def _conv_block(in_channels, out_channels, kernel_size, stride, padding):
         net = nn.Sequential(
-            nn.Linear(input_size, output_size),
-            nn.BatchNorm1d(output_size),
+            nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding),
+            nn.MaxPool2d(2),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU()
+        )
+        return net
+
+    @staticmethod
+    def _conv_t_block(in_channels, out_channels, kernel_size, stride, padding):
+        net = nn.Sequential(
+            nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride, padding),
+            nn.BatchNorm2d(out_channels),
             nn.ReLU()
         )
         return net
@@ -46,7 +60,8 @@ class VAE(nn.Module):
         return z, mean, log_var
 
     def decode(self, z):
-        y = self.decoder(z).reshape(-1, self.image_size, self.image_size)
+        z = z.reshape(-1, 64, 1, 1)
+        y = self.decoder(z)
         return y
 
     def save(self, path: str):
