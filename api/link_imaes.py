@@ -50,7 +50,7 @@ def linear_complement(x1, x2, n):
 def get_input(image1: str, image2: str, image_size: int) -> torch.Tensor:
     transform = transforms.Compose([
         transforms.Resize((image_size, image_size)),
-        # transforms.Grayscale(),
+        transforms.Lambda(lambda x: x.convert("RGB")),
         transforms.ToTensor(),
     ])
     img1 = b64_to_image(image1)
