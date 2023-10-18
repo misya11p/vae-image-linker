@@ -35,6 +35,7 @@ def link_images(
     z1, z2 = z.chunk(2, dim=0)
     z = linear_complement(z1, z2, n_frames)
     y = model.decode(z)
+    save_images(y)
     images = decode_images(y)
     return images
 
@@ -81,3 +82,10 @@ def tensor_to_b64(image: torch.Tensor) -> str:
     image_b64 = base64.b64encode(image_binary)
     image_b64 = image_b64.decode("utf-8")
     return image_b64
+
+
+def save_images(images: torch.Tensor) -> None:
+    images = images.detach().cpu()
+    images = [to_pil(image) for image in images]
+    for i, image in enumerate(images):
+        image.save(f"images/{i}.png")

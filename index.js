@@ -1,4 +1,7 @@
 const canvas = new fabric.Canvas("canvas");
+var images = []
+var imageLoaded = false;
+
 
 document.getElementById("draw").addEventListener("click", function () {
   canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
@@ -20,7 +23,7 @@ function previewImage(obj)
 {
 	var fileReader = new FileReader();
 	fileReader.onload = (function() {
-		document.getElementById('loadedImage').src = fileReader.result;
+		document.getElementById('loaded-image').src = fileReader.result;
 	});
 	fileReader.readAsDataURL(obj.files[0]);
 }
@@ -36,12 +39,12 @@ const API_URL = "http://127.0.0.1:5000/image-linker";
 function getResult() {
   console.log("getResult");
   var image1 = document.getElementById("canvas");
-  var image2 = document.getElementById("loadedImage");
-  let data = {
+  var image2 = document.getElementById("loaded-image");
+  var data = {
     image1: image1.toDataURL("image/png"),
     image2: image2.src,
   };
-  let jsonData = JSON.stringify(data);
+  var jsonData = JSON.stringify(data);
 
   fetch(API_URL, {
     method: "POST",
@@ -52,8 +55,23 @@ function getResult() {
   })
     .then((data) => data.text())
     .then((res) => {
-      console.log(typeof res)
-      const data = JSON.parse(res);
+      let data = JSON.parse(res);
       console.log(data.status);
+      if (data.status == "success") {
+        images = data.images;
+        imageLoaded = true;
+        updateImage();
+      }
     });
 }
+
+function updateImage() {
+  if (imageLoaded) {
+    var slider = document.getElementById("image-slider");
+    var idx = Number(slider.value);
+    var image = document.getElementById("result-image");
+    image.src = "data:image/png;base64," + images[idx - 1];
+  }
+}
+let slider = document.getElementById("image-slider");
+slider.addEventListener("input", updateImage);

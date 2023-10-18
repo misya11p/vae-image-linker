@@ -21,13 +21,14 @@
       </div>
       <div id="load-block" class="mx-6">
         <input type="file" id="load" accept="image/*" class="h-8" onchange="previewImage(this);">
-        <img id="loadedImage" class="border-2 w-80 h-80" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+        <img id="loaded-image" class="border-2 w-80 h-80" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
       </div>
     </div>
     <button id="submit" class="h-8" onclick="getResult()">送信</button>
   </div>
   <div id="result">
-    result
+    <input id="image-slider" type="range" min="1" max="10" step="1" value="1">
+    <img id="result-image" class="border-2 w-80 h-80 mx-auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
   </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
