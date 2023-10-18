@@ -52,7 +52,8 @@ function getResult() {
   })
     .then((data) => data.text())
     .then((res) => {
-      console.log(res);
-      document.getElementById("result").innerHTML = res;
+      console.log(typeof res)
+      const data = JSON.parse(res);
+      console.log(data.status);
     });
 }

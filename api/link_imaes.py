@@ -35,7 +35,15 @@ def link_images(
     z1, z2 = z.chunk(2, dim=0)
     z = linear_complement(z1, z2, n_frames)
     y = model.decode(z)
-    return y
+    images = decode_images(y)
+    return images
+
+def linear_complement(x1, x2, n):
+    x1 = [x.item() for x in x1.squeeze()]
+    x2 = [x.item() for x in x2.squeeze()]
+    xs = [torch.linspace(s, e, n) for s, e in zip(x1, x2)]
+    x = torch.stack(xs, dim=0).T
+    return x
 
 
 def get_input(image1: str, image2: str, image_size: int) -> torch.Tensor:
@@ -58,13 +66,6 @@ def b64_to_image(image: str) -> Image:
     image = Image.open(io.BytesIO(image))
     return image
 
-
-def linear_complement(x1, x2, n):
-    x1 = [x.item() for x in x1.squeeze()]
-    x2 = [x.item() for x in x2.squeeze()]
-    xs = [torch.linspace(s, e, n) for s, e in zip(x1, x2)]
-    x = torch.stack(xs, dim=0).T
-    return x
 
 def decode_images(images: torch.Tensor) -> List[str]:
     images = images.detach().cpu()

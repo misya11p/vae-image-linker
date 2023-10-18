@@ -30,10 +30,11 @@ def image_linker():
     image1 = data["image1"]
     image2 = data["image2"]
 
-    result = link_images(image1, image2, CONFIG)
-    print(type(result))
-    print(len(result))
-    return {"result": "success"}
+    images = link_images(image1, image2, CONFIG) # List of base64 images
+    return {
+        "status": "success",
+        "images": images
+    }
 
 
 if __name__ == "__main__":
