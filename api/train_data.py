@@ -15,7 +15,9 @@ class ImageDataset(Dataset):
     ):
         transform = transforms.Compose([
             transforms.Resize(image_size),
-            transforms.Grayscale(),
+            transforms.Lambda(lambda x: x.convert("RGB")),
+            transforms.RandomResizedCrop(size=image_size, scale=(0.3, 1.0)),
+            transforms.RandomRotation(90, fill=1.),
             transforms.RandomHorizontalFlip(),
             transforms.RandomVerticalFlip(),
             transforms.ToTensor()

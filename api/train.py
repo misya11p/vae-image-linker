@@ -16,6 +16,7 @@ def main(
     batch_size: int = 64,
     lr: float = 1e-4,
     mag: int = 10,
+    prog_unit: int = 1,
     data_root: str = "data",
     save_path: str = "models/model.pth",
     device: str = "auto",
@@ -27,13 +28,13 @@ def main(
     model = VAE(image_size, device)
     optimizer = optim.Adam(model.parameters(), lr=lr)
     print("start training")
-    train(model, optimizer, dataloader, device, n_epochs)
+    train(model, optimizer, dataloader, device, n_epochs, prog_unit)
     model.save(save_path)
     print("finish training")
 
 
 def loss_fn(x, y, mean, log_var):
-    loss_recons = F.binary_cross_entropy(y, x, reduction='sum')
+    loss_recons = F.binary_cross_entropy(y, x, reduction='mean')
     loss_reg = -0.5 * torch.sum(1 + log_var - mean**2 - log_var.exp())
     return loss_recons + loss_reg
 
@@ -43,13 +44,14 @@ def train(
     dataloader: DataLoader,
     device: torch.device,
     n_epochs: int = 30,
+    prog_unit: int = 1
 ) -> None:
     model.train()
-    prog.start(n_epochs=n_epochs, n_iter=len(dataloader))
+    prog.start(n_epochs=n_epochs, n_iter=len(dataloader), unit=prog_unit)
     for _ in range(n_epochs):
         for x in dataloader:
             optimizer.zero_grad()
-            x = x.to(device).squeeze()
+            x = x.to(device)
             y, mean, log_var, _ = model(x)
             loss = loss_fn(x, y, mean, log_var)
             loss.backward()
@@ -64,6 +66,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--mag", type=int, default=10)
+    parser.add_argument("--prog_unit", type=int, default=1)
     parser.add_argument("--data_root", type=str, default="data")
     parser.add_argument("--save_path", type=str, default="models/model.pth")
     parser.add_argument("--device", type=str, default="auto")
