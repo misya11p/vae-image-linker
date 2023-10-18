@@ -50,7 +50,7 @@ def train(
     model.train()
     prog.start(n_epochs=n_epochs, n_iter=len(dataloader), unit=prog_unit)
     for _ in range(n_epochs):
-        for x in dataloader:
+        for x, _ in dataloader:
             optimizer.zero_grad()
             x = x.to(device)
             y, mean, log_var, _ = model(x)
