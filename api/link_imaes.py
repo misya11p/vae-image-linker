@@ -1,34 +1,82 @@
 from typing import List
+import base64
+import io
 import torch
-from .model import VAE
+from torchvision import transforms
+from PIL import Image
+import numpy as np
+from model import VAE
 
 
-def link_images(image1, image2, n_frames: int, config: dict) -> List[str]:
+def link_images(
+    image1: str,
+    image2: str,
+    config: dict
+) -> List[str]:
+    """
+
+    Args:
+        image1 (str): base64 encoded image
+        image2 (str): base64 encoded image
+        n_frames (int): number of frames to generate
+        config (dict): configuration dictionary
+
+    Returns:
+        List[str]: list of base64 encoded images
+    """
     model_path = config["model_path"]
+    n_frames = config["n_frames"]
     device = config["device"]
-    model = VAE.load(model_path, device)
-    x = get_input(image1, image2)
-    z1, z2 = model.encode(x).chunk(2, dim=1)
-    y = get_frames(model, z1, z2, n_frames)
-    return y
-
-
-def get_input(image1, image2) -> torch.Tensor:
-    return
-
-def get_frames(
-    model: VAE,
-    z1: torch.Tensor,
-    z2: torch.Tensor,
-    n_frames: int
-) -> torch.Tensor:
+    image_size = config["image_size"]
+    model = VAE(image_size, device)
+    model.load(model_path)
+    x = get_input(image1, image2, image_size)
+    z, _, _ = model.encode(x)
+    z1, z2 = z.chunk(2, dim=0)
     z = linear_complement(z1, z2, n_frames)
     y = model.decode(z)
     return y
 
 
-def linear_complement(x1, x2, n):
-    xs = [torch.linspace(s, e, n) for s, e in zip(x1, x2)]
-    x = torch.stack(xs, dim=1).T
+def get_input(image1: str, image2: str, image_size: int) -> torch.Tensor:
+    transform = transforms.Compose([
+        transforms.Resize((image_size, image_size)),
+        transforms.Grayscale(),
+        transforms.ToTensor(),
+    ])
+    img1 = b64_to_image(image1)
+    img2 = b64_to_image(image2)
+    img1 = transform(img1)
+    img2 = transform(img2)
+    x = torch.stack([img1, img2])
     return x
-    
+
+def b64_to_image(image: str) -> Image:
+    image = image.split(',')[1] if 'base64,' in image else image
+    image = base64.b64decode(image)
+    image = np.frombuffer(image, dtype=np.uint8)
+    image = Image.open(io.BytesIO(image))
+    return image
+
+
+def linear_complement(x1, x2, n):
+    x1 = [x.item() for x in x1.squeeze()]
+    x2 = [x.item() for x in x2.squeeze()]
+    xs = [torch.linspace(s, e, n) for s, e in zip(x1, x2)]
+    x = torch.stack(xs, dim=0).T
+    return x
+
+def decode_images(images: torch.Tensor) -> List[str]:
+    images = images.detach().cpu()
+    images = [tensor_to_b64(image) for image in images]
+    return images
+
+to_pil = transforms.ToPILImage()
+def tensor_to_b64(image: torch.Tensor) -> str:
+    buffer = io.BytesIO()
+    image = to_pil(image)
+    image.save(buffer, format="PNG")
+    image_binary = buffer.getvalue()
+    image_b64 = base64.b64encode(image_binary)
+    image_b64 = image_b64.decode("utf-8")
+    return image_b64

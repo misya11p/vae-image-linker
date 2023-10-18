@@ -15,6 +15,7 @@ CONFIG = {
     "model_path": "models/model.pth",
     "n_frames": 10,
     "device": "cpu",
+    "image_size": 128
 }
 
 @app.route("/image-linker", methods=["POST"])
@@ -30,6 +31,8 @@ def image_linker():
     image2 = data["image2"]
 
     result = link_images(image1, image2, CONFIG)
+    print(type(result))
+    print(len(result))
     return {"result": "success"}
 
 
