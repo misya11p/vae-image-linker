@@ -36,7 +36,8 @@ def main(
 def loss_fn(x, y, mean, log_var):
     loss_recons = F.binary_cross_entropy(y + 1e-4, x, reduction='mean')
     loss_reg = -0.5 * torch.sum(1 + log_var - mean**2 - log_var.exp())
-    return loss_recons + loss_reg
+    loss = loss_recons + loss_reg
+    return loss
 
 def train(
     model: VAE,
