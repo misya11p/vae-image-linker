@@ -33,7 +33,7 @@ def main(
 
 
 def loss_fn(x, y, mean, log_var):
-    loss_recons = F.binary_cross_entropy(y, x, reduction='sum')
+    loss_recons = F.binary_cross_entropy(y, x, reduction='mean')
     loss_reg = -0.5 * torch.sum(1 + log_var - mean**2 - log_var.exp())
     return loss_recons + loss_reg
 
@@ -49,7 +49,7 @@ def train(
     for _ in range(n_epochs):
         for x in dataloader:
             optimizer.zero_grad()
-            x = x.to(device)
+            x = x.to(device).squeeze()
             y, mean, log_var, _ = model(x)
             loss = loss_fn(x, y, mean, log_var)
             loss.backward()

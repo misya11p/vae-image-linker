@@ -32,7 +32,7 @@ class VAE(nn.Module):
 
     def forward(self, x):
         z, mean, log_var = self.encode(x)
-        y = self.decoder(z).view(-1, 1, self.image_size, self.image_size)
+        y = self.decode(z)
         return y, mean, log_var, z
 
     def representation(self, mean, log_var):
@@ -46,7 +46,7 @@ class VAE(nn.Module):
         return z, mean, log_var
 
     def decode(self, z):
-        y = self.decoder(z)
+        y = self.decoder(z).reshape(-1, self.image_size, self.image_size)
         return y
 
     def save(self, path: str):
