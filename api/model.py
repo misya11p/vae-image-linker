@@ -46,7 +46,6 @@ class VAE(nn.Module):
 
     def forward(self, x):
         z, mean, log_var = self.encode(x)
-        z = z.reshape(-1, 64, 1, 1)
         y = self.decode(z)
         return y, mean, log_var, z
 
@@ -61,6 +60,7 @@ class VAE(nn.Module):
         return z, mean, log_var
 
     def decode(self, z):
+        z = z.reshape(-1, 64, 1, 1)
         y = self.decoder(z)
         return y
 
