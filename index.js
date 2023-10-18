@@ -56,6 +56,10 @@ function getResult() {
         imageLoaded = true;
         let result = document.getElementById("result");
         result.style.display = "block";
+        window.scrollTo({
+          top: 2000,
+          behavior: "smooth",
+        });
         updateImage();
       }
     });
