@@ -10,28 +10,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@600&family=Noto+Serif+JP:wght@200;300;400&family=Oswald&display=swap" rel="stylesheet">
 </head>
 <body class="text-center">
-  <h1 class="text-6xl py-12" style="font-family: 'Oswald', sans-serif;">VAE Image Linker</h1>
-  <div id="input" class="my-6">
+  <h1 class="text-6xl py-16 bg-orange-300" style="font-family: 'Oswald', sans-serif;">VAE Image Linker</h1>
+  <div id="description" class="mt-8 pb-2">
+    <p class="text-xl my-3" style="font-family: 'Klee One', cursive;">VAEを使って二つの画像をつなぐよ。</p>
+    <p class="text-xl my-3" style="font-family: 'Klee One', cursive;">Demonstration of linking two uploaded images using VAE: Variational Autoencoder.</p>
+  </div>
+  <div id="input">
     <div id="input-images" class="flex justify-center my-6">
-      <div id="paint-block" class="mx-6">
-        <div id="navigation" class="h-8">
-          <input type="radio" id="draw" name="mode">
-          <label for="draw">ペン</label>
-          <input type="radio" id="erase" name="mode">
-          <label for="draw">消しゴム</label>
-        </div>
-        <canvas id="canvas" class="border-2" width="320" height="320"></canvas>
+      <div id="load-block" class="mx-6">
+        <input type="file" id="load1" class="m-4 file:rounded-full file:border-0 file:bg-orange-50 file:text-orange-400 hover:file:bg-orange-100" accept="image/*" class="h-8" onchange="previewImage(this, 1);">
+        <img id="loaded-image1" class="border-2 border-orange-200 w-64 h-64 mx-auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
       </div>
       <div id="load-block" class="mx-6">
-        <input type="file" id="load" accept="image/*" class="h-8" onchange="previewImage(this);">
-        <img id="loaded-image" class="border-2 w-80 h-80" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+        <input type="file" id="load2" class="m-4 file:rounded-full file:border-0 file:bg-orange-50 file:text-orange-400 hover:file:bg-orange-100" accept="image/*" class="h-8" onchange="previewImage(this, 2);">
+        <img id="loaded-image2" class="border-2 border-orange-200 w-64 h-64 mx-auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
       </div>
     </div>
-    <button id="submit" class="h-8" onclick="getResult()">送信</button>
+    <button id="submit" class="bg-orange-100 py-3 px-6 text-2xl text-orange-400 rounded-2xl hover:bg-orange-200" onclick="getResult()">LINK</button>
   </div>
-  <div id="result">
-    <input id="image-slider" type="range" min="1" max="10" step="1" value="1">
-    <img id="result-image" class="border-2 w-80 h-80 mx-auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+  <div id="result" class="mb-20" style="display: none;">
+    <input id="image-slider" type="range" min="1" max="10" step="1" value="1" class="w-72 py-8 border-0">
+    <img id="result-image" class="border-2 border-orange-200 w-96 h-96 mx-auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
   </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>

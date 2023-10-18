@@ -19,34 +19,28 @@ document.getElementById("erase").addEventListener("click", function () {
   canvas.isDrawingMode = true;
 });
 
-function previewImage(obj)
+function previewImage(obj, idx)
 {
 	var fileReader = new FileReader();
 	fileReader.onload = (function() {
-		document.getElementById('loaded-image').src = fileReader.result;
+  var idName = "loaded-image" + idx;
+		document.getElementById(idName).src = fileReader.result;
 	});
 	fileReader.readAsDataURL(obj.files[0]);
 }
 
 // const API_URL = "https://muds.gdl.jp/s2122027/";
-const API_URL = "http://127.0.0.1:5000/image-linker";
-// const API_URL = "http://127.0.0.1:8000/";
-// fetch(API_URL)
-//   .then((data) => data.text())
-//   .then((res) => console.log(res));
-
 
 function getResult() {
   console.log("getResult");
-  var image1 = document.getElementById("canvas");
-  var image2 = document.getElementById("loaded-image");
+  var image1 = document.getElementById("loaded-image1");
+  var image2 = document.getElementById("loaded-image2");
   var data = {
-    image1: image1.toDataURL("image/png"),
+    image1: image1.src,
     image2: image2.src,
   };
   var jsonData = JSON.stringify(data);
-
-  fetch(API_URL, {
+  fetch("http://127.0.0.1:5000/image-linker", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -60,6 +54,8 @@ function getResult() {
       if (data.status == "success") {
         images = data.images;
         imageLoaded = true;
+        let result = document.getElementById("result");
+        result.style.display = "block";
         updateImage();
       }
     });

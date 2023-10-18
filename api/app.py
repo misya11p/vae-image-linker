@@ -12,7 +12,7 @@ def hello_world():
 
 
 CONFIG = {
-    "model_path": "models/model.pth",
+    "model_path": "models/cnn1.pth",
     "n_frames": 10,
     "device": "cpu",
     "image_size": 128
