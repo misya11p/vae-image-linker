@@ -13,8 +13,8 @@ function previewImage(obj, idx)
 	fileReader.readAsDataURL(obj.files[0]);
 }
 
-// const API_URL = "https://muds.gdl.jp/s2122027/";
-const API_URL = "http://127.0.0.1:5000/image-linker";
+const API_URL = "https://muds.gdl.jp/s2122027/vae-image-linker";
+// const API_URL = "http://127.0.0.1:5000/image-linker";
 
 function getResult() {
   console.log("getResult");
