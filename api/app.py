@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_cors import CORS
-from link_imaes import link_images
+from api.link_images import link_images
 
 app = Flask(__name__)
 CORS(app)
