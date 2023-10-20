@@ -3,22 +3,6 @@ var images = []
 var imageLoaded = false;
 
 
-document.getElementById("draw").addEventListener("click", function () {
-  canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-  canvas.freeDrawingBrush.width=5;
-  canvas.freeDrawingBrush.color="black";
-  canvas.isDrawingMode = true;
-});
-
-canvas.backgroundColor="white";
-
-document.getElementById("erase").addEventListener("click", function () {
-  canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-  canvas.freeDrawingBrush.width=10;
-  canvas.freeDrawingBrush.color="white";
-  canvas.isDrawingMode = true;
-});
-
 function previewImage(obj, idx)
 {
 	var fileReader = new FileReader();
@@ -30,6 +14,7 @@ function previewImage(obj, idx)
 }
 
 // const API_URL = "https://muds.gdl.jp/s2122027/";
+const API_URL = "http://127.0.0.1:5000/image-linker";
 
 function getResult() {
   console.log("getResult");
@@ -40,7 +25,7 @@ function getResult() {
     image2: image2.src,
   };
   var jsonData = JSON.stringify(data);
-  fetch("http://127.0.0.1:5000/image-linker", {
+  fetch(API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
