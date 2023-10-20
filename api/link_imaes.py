@@ -28,22 +28,21 @@ def link_images(
     n_frames = config["n_frames"]
     device = config["device"]
     image_size = config["image_size"]
-    model = VAE(image_size, device)
-    model.load(model_path)
+    model = VAE(3)
+    model.load_state_dict(torch.load(model_path, map_location=device))
     x = get_input(image1, image2, image_size)
-    z, _, _ = model.encode(x)
+    z, _, _ = model.encoder(x)
     z1, z2 = z.chunk(2, dim=0)
     z = linear_complement(z1, z2, n_frames)
-    y = model.decode(z)
+    y = model.decoder(z)
     save_images(y)
     images = decode_images(y)
     return images
 
 def linear_complement(x1, x2, n):
-    x1 = [x.item() for x in x1.squeeze()]
-    x2 = [x.item() for x in x2.squeeze()]
-    xs = [torch.linspace(s, e, n) for s, e in zip(x1, x2)]
-    x = torch.stack(xs, dim=0).T
+    x1 = x1.detach().numpy().squeeze()
+    x2 = x2.detach().numpy().squeeze()
+    x = torch.tensor(np.linspace(x1, x2, n))
     return x
 
 

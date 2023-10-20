@@ -12,10 +12,10 @@ def hello_world():
 
 
 CONFIG = {
-    "model_path": "models/cnn1.pth",
+    "model_path": "models/vae1.pth",
     "n_frames": 10,
     "device": "cpu",
-    "image_size": 128
+    "image_size": 96
 }
 
 @app.route("/image-linker", methods=["POST"])
