@@ -28,13 +28,15 @@ def link_images(
     n_frames = config["n_frames"]
     device = config["device"]
     image_size = config["image_size"]
-    model = VAE(3)
-    model.load_state_dict(torch.load(model_path, map_location=device))
-    x = get_input(image1, image2, image_size)
-    z, _, _ = model.encoder(x)
-    z1, z2 = z.chunk(2, dim=0)
-    z = linear_complement(z1, z2, n_frames)
-    y = model.decoder(z)
+    with torch.no_grad():
+        model = VAE(3)
+        model.load_state_dict(torch.load(model_path, map_location=device))
+        model.eval()
+        x = get_input(image1, image2, image_size)
+        z, _, _ = model.encoder(x)
+        z1, z2 = z.chunk(2, dim=0)
+        z = linear_complement(z1, z2, n_frames)
+        y = model.decoder(z)
     save_images(y)
     images = decode_images(y)
     return images
