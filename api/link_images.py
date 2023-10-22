@@ -28,9 +28,10 @@ def link_images(
     n_frames = config["n_frames"]
     device = config["device"]
     image_size = config["image_size"]
+    z_dim = config["z_dim"]
     with torch.no_grad():
-        model = VAE(3)
-        model.load_state_dict(torch.load(model_path, map_location=device))
+        model = VAE(z_dim=z_dim)
+        model.load(model_path).to(device)
         model.eval()
         x = get_input(image1, image2, image_size)
         z, _, _ = model.encoder(x)

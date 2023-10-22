@@ -12,29 +12,38 @@ def hello_world():
 
 
 CONFIG = {
-    "model_path": "models/vae1.pth",
-    "n_frames": 10,
+    "model_path": "models/vae3.pth",
+    "n_frames": 20,
     "device": "cpu",
-    "image_size": 96
+    "image_size": 96,
+    "z_dim": 512
 }
 
 @app.route("/image-linker", methods=["POST"])
 def image_linker():
     try:
         data = request.get_json()
+        image1 = data["image1"] # Images of base64
+        image2 = data["image2"]
     except Exception as e:
         print(e)
-        return {"result": "error"}
+        return {
+            "status": "dataLoadError",
+            "message": e
+        }
 
-    # Images of base64
-    image1 = data["image1"]
-    image2 = data["image2"]
-
-    images = link_images(image1, image2, CONFIG) # List of base64 images
-    return {
-        "status": "success",
-        "images": images
-    }
+    try:
+        images = link_images(image1, image2, CONFIG) # List of base64 images
+        return {
+            "status": "success",
+            "images": images
+        }
+    except Exception as e:
+        print(e)
+        return {
+            "status": "linkImagesError",
+            "message": e
+        }
 
 
 if __name__ == "__main__":
