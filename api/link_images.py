@@ -31,9 +31,9 @@ def link_images(
     z_dim = config["z_dim"]
     with torch.no_grad():
         model = VAE(z_dim=z_dim)
-        model.load(model_path).to(device)
-        model.eval()
+        model.load(model_path, device=device)
         x = get_input(image1, image2, image_size)
+        model.eval()
         z, _, _ = model.encoder(x)
         z1, z2 = z.chunk(2, dim=0)
         z = linear_complement(z1, z2, n_frames)

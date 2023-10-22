@@ -12,7 +12,7 @@ def hello_world():
 
 
 CONFIG = {
-    "model_path": "models/vae3.pth",
+    "model_path": "./models/vae3.pth",
     "n_frames": 20,
     "device": "cpu",
     "image_size": 96,
