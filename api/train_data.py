@@ -7,6 +7,7 @@ def get_dataloader(
     data_root: str = "./data",
     image_size: int = 96,
     batch_size: int = 64,
+    split: str = "unlabeled",
 ) -> DataLoader:
     """
     Get dataloader for training.
@@ -20,13 +21,13 @@ def get_dataloader(
     transform = transforms.Compose([
         transforms.Resize(image_size),
         transforms.Lambda(lambda x: x.convert("RGB")),
-        transforms.ColorJitter(0.3, 0.3, 0.3, 0.3),
+        transforms.ColorJitter(0.1, 0.1, 0.1, 0.1),
+        transforms.RandomRotation(30),
         transforms.RandomResizedCrop(size=image_size, scale=(0.3, 1.0)),
-        transforms.RandomRotation(90),
         transforms.RandomHorizontalFlip(),
         transforms.RandomVerticalFlip(),
         transforms.ToTensor()
     ])
-    image_dataset = STL10(root=data_root, split="train", transform=transform)
+    image_dataset = STL10(root=data_root, split=split, transform=transform)
     dataloader = DataLoader(image_dataset, batch_size=batch_size, shuffle=True)
     return dataloader
