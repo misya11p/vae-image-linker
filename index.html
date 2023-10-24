@@ -22,7 +22,9 @@
       The images are linearly linked in the latent space, and the images between them are generated. <br>
       The reconstruction is not so good because it is not a good model.
     </p>
-    <p class="text-xl my-3 text-orange-400">Details of the model architecture, training, etc: <a href="https://github.com/misya11p/vae-image-linker"><u>misya11p/vae-image-linker</u></a></p>
+    <p class="text-xl my-3 text-orange-400">
+      Details of the model architecture, training, etc: <a href="https://github.com/misya11p/vae-image-linker"><u>misya11p/vae-image-linker</u></a>
+    </p>
   </div>
   <div id="input">
     <div id="input-images" class="flex justify-center my-6">
@@ -36,12 +38,12 @@
       </div>
     </div>
     <button id="submit" class="bg-orange-100 py-3 my-6 px-6 text-2xl text-orange-400 rounded-2xl hover:bg-orange-200" onclick="getResult()">LINK</button>
+    <p id="message" class="text-2xl text-orange-400 my-6" style="display: none;"></p>
   </div>
   <div id="result" class="mb-20" style="display: none;">
     <input id="image-slider" type="range" min="1" max="20" step="1" value="1" class="w-72 py-8 border-0">
     <img id="result-image" class="border-2 border-orange-200 w-96 h-96 mx-auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
   </div>
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
 <script src="./index.js"></script>
 </html>

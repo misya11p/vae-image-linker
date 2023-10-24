@@ -1,4 +1,3 @@
-const canvas = new fabric.Canvas("canvas");
 var images = []
 var imageLoaded = false;
 
@@ -16,6 +15,13 @@ function previewImage(obj, idx)
 const API_URL = "https://muds.gdl.jp/s2122027/image-linker";
 // const API_URL = "http://127.0.0.1:5000/image-linker";
 
+function scroll() {
+  window.scrollTo({
+    top: 2000,
+    behavior: "smooth",
+  });
+}
+
 function getResult() {
   console.log("getResult");
   var image1 = document.getElementById("loaded-image1");
@@ -25,6 +31,8 @@ function getResult() {
     image2: image2.src,
   };
   var jsonData = JSON.stringify(data);
+  let message = document.getElementById("message");
+  message.style.display = "block";
   fetch(API_URL, {
     method: "POST",
     headers: {
@@ -37,17 +45,23 @@ function getResult() {
       let data = JSON.parse(res);
       console.log(data.status);
       if (data.status == "success") {
+        message.style.display = "none";
         images = data.images;
         imageLoaded = true;
         let result = document.getElementById("result");
         result.style.display = "block";
-        window.scrollTo({
-          top: 2000,
-          behavior: "smooth",
-        });
+        scroll();
         updateImage();
+      } else {
+        message.innerHTML = "Error";
       }
+    })
+    .catch((err) => {
+      console.log(err);
+      message.innerHTML = "Error";
+      scroll();
     });
+  message.innerHTML = "Generating... It may take a while the first time.";
 }
 
 function updateImage() {
