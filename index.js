@@ -1,5 +1,6 @@
 var images = []
 var imageLoaded = false;
+var isUpload = [false, false]
 
 
 function previewImage(obj, idx)
@@ -10,6 +11,7 @@ function previewImage(obj, idx)
 		document.getElementById(idName).src = fileReader.result;
 	});
 	fileReader.readAsDataURL(obj.files[0]);
+  isUpload[idx - 1] = true;
 }
 
 const API_URL = "https://muds.gdl.jp/s2122027/image-linker";
@@ -24,15 +26,20 @@ function scroll() {
 
 function getResult() {
   console.log("getResult");
+  let message = document.getElementById("message");
+  message.style.display = "block";
   var image1 = document.getElementById("loaded-image1");
   var image2 = document.getElementById("loaded-image2");
+  if (!isUpload[0] || !isUpload[1]) {
+    message.innerHTML = "Please upload images.";
+    scroll();
+    return;
+  }
   var data = {
     image1: image1.src,
     image2: image2.src,
   };
   var jsonData = JSON.stringify(data);
-  let message = document.getElementById("message");
-  message.style.display = "block";
   fetch(API_URL, {
     method: "POST",
     headers: {
